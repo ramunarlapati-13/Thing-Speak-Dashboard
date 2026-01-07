@@ -170,6 +170,27 @@ input[type="text"]:focus {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
+    min-height: 400px;
+}
+
+.loader-container {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed var(--glass-border);
+    border-radius: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.loader-container p {
+    font-size: 1.1rem;
+    max-width: 400px;
+    line-height: 1.6;
 }
 
 .card {

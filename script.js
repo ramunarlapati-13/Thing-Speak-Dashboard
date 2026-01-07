@@ -17,7 +17,7 @@ const icons = {
 };
 
 // State
-let channelId = localStorage.getItem('thingspeak_channel_id') || '3220193';
+let channelId = localStorage.getItem('thingspeak_channel_id') || '';
 let charts = {};
 let intervalId = null;
 let activeFields = [];
@@ -42,31 +42,34 @@ const commonChartOptions = {
             displayColors: false,
             callbacks: {
                 title: (context) => {
-                    return context[0].label;
+                    const label = context[0].label;
+                    return label.includes(', ') ? label.split(', ') : label;
                 },
                 label: (context) => {
-                    return `Value: ${context.parsed.y}`;
+                    const dataset = context.dataset;
+                    const unit = dataset.unit || '';
+                    return `Value: ${context.parsed.y} ${unit}`;
                 }
             }
         }
     },
     scales: {
         x: { display: false },
-        y: { 
-            grid: { color: 'rgba(255, 255, 255, 0.05)' }, 
-            ticks: { color: '#94a3b8' } 
+        y: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#94a3b8' }
         }
     },
-    elements: { 
-        line: { 
+    elements: {
+        line: {
             tension: 0.4,
             borderWidth: 2
-        }, 
-        point: { 
+        },
+        point: {
             radius: 0,
             hoverRadius: 6,
             hoverBackgroundColor: '#38bdf8'
-        } 
+        }
     }
 };
 
@@ -102,7 +105,16 @@ function createCard(fieldId, fieldName) {
 }
 
 async function initDashboard() {
-    if (!channelId) return;
+    if (!channelId) {
+        sensorContainer.innerHTML = `
+            <div class="loader-container">
+                <p>Welcome! Please enter your ThingSpeak Channel ID above to start monitoring.</p>
+            </div>
+        `;
+        statusBadge.textContent = 'Awaiting Channel ID';
+        statusBadge.className = 'status-badge connecting';
+        return;
+    }
 
     statusBadge.textContent = 'Initializing...';
 
@@ -151,7 +163,8 @@ function renderCards() {
                     borderColor: config.color,
                     backgroundColor: config.color + '1A',
                     fill: true,
-                    data: []
+                    data: [],
+                    unit: config.unit
                 }]
             },
             options: commonChartOptions
@@ -172,7 +185,7 @@ async function fetchData() {
             document.getElementById(`value-${field.id}`).textContent = displayValue;
 
             // Update Chart
-            const labels = feeds.map(f => new Date(f.created_at).toLocaleTimeString());
+            const labels = feeds.map(f => new Date(f.created_at).toLocaleString());
             const fieldData = feeds.map(f => parseFloat(f[field.id]));
 
             const chart = charts[field.id];
@@ -202,4 +215,7 @@ updateBtn.addEventListener('click', () => {
 
 // Start
 channelInput.value = channelId;
+if (!channelId) {
+    channelInput.focus();
+}
 initDashboard();
