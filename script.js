@@ -173,7 +173,7 @@ async function initDashboard() {
         // Find all active fields
         activeFields = [];
         for (let i = 1; i <= 8; i++) {
-            if (channel[`field${i}`]) {
+            if (channel[`field${i}`] && !channel[`field${i}`].toLowerCase().includes('relay')) {
                 activeFields.push({ id: `field${i}`, name: channel[`field${i}`] });
             }
         }
