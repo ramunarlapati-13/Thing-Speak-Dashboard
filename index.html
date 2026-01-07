@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Things Speak Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="dashboard-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"
+                            fill="var(--primary-color)" />
+                        <path
+                            d="M12.88 7.37996C12.81 7.21996 12.67 7.09996 12.51 7.03996C12.35 6.98996 12.18 6.99996 12.03 7.07996C11.96 7.11996 11.89 7.15996 11.83 7.21996L8.27002 10.78C7.98002 11.07 7.98002 11.55 8.27002 11.84C8.42002 11.99 8.61002 12.06 8.80002 12.06C8.99002 12.06 9.18002 11.99 9.33002 11.84L11.25 9.91996V16.25C11.25 16.66 11.59 17 12 17C12.41 17 12.75 16.66 12.75 16.25V9.91996L14.67 11.84C14.82 11.99 15.01 12.06 15.2 12.06C15.39 12.06 15.58 11.99 15.73 11.84C16.02 11.55 16.02 11.07 15.73 10.78L12.88 7.37996Z"
+                            fill="var(--primary-color)" />
+                    </svg>
+                </div>
+                <h1>Things Speak Dashboard</h1>
+            </div>
+            <div class="status-bar">
+                <span id="connection-status" class="status-badge connecting">Connecting...</span>
+                <span class="last-updated">Last update: <span id="last-update-time">--:--:--</span></span>
+            </div>
+        </header>
+
+        <div class="controls-section glass-panel">
+            <h3>Configuration</h3>
+            <div class="input-group">
+                <label for="channel-id">Channel ID</label>
+                <input type="text" id="channel-id" placeholder="Enter Channel ID" value="">
+                <button id="update-btn" class="primary-btn">Load Channel</button>
+            </div>
+            <p class="helper-text">Please enter your ThingSpeak Channel ID to view data. Keys are pre-configured.</p>
+        </div>
+
+        <main class="dashboard-grid" id="sensor-container">
+            <!-- Cards will be dynamically inserted here -->
+            <div class="loader-container">
+                <p>Enter Channel ID and click Load to view fields...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
