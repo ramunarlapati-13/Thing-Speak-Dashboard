@@ -22,6 +22,28 @@ let charts = {};
 let intervalId = null;
 let activeFields = [];
 
+async function logAccess(cid) {
+    if (!cid) return;
+    try {
+        // Fetch IP address
+        const ipRes = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipRes.json();
+
+        // Send log to our server
+        await fetch('/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                channelId: cid,
+                time: new Date().toLocaleString(),
+                ip: ipData.ip
+            })
+        });
+    } catch (err) {
+        console.warn("Logging failed (Are you running server.js?):", err);
+    }
+}
+
 // Chart Options
 const commonChartOptions = {
     responsive: true,
@@ -130,6 +152,9 @@ async function initDashboard() {
                 activeFields.push({ id: `field${i}`, name: channel[`field${i}`] });
             }
         }
+
+        // Log this access history
+        logAccess(channelId);
 
         renderCards();
         fetchData();

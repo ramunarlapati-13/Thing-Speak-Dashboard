@@ -4,22 +4,17 @@ A beautiful, realtime dashboard to monitor your DHT11 (Temperature & Humidity) a
 
 ## Setup
 
-1. **Open the Dashboard**:
-   Since modern browsers restrict fetching data from local files (`file://`), you need to run a local server.
+1. **Run with History Logging (Recommended)**:
+   This enables "lively" monitoring of Channel IDs, access times, and IP addresses into `access_log.txt`.
    
-   You can use Python or Node.js:
-   
-   **Using Python:**
    ```bash
-   python -m http.server
+   node server.js
    ```
-   Then open `http://localhost:8000`
+   Then open `http://localhost:3000`
 
-   **Using Node.js:**
-   ```bash
-   npx http-server .
-   ```
-   Then open `http://127.0.0.1:8080`
+2. **Standard Local Server**:
+   You can still use `python -m http.server` or `npx http-server .`, but access history logging will be disabled.
+
 
 2. **Configure**:
    - Enter your **ThingSpeak Channel ID** in the configuration box.
