@@ -1,5 +1,18 @@
-// Configuration
 const READ_API_KEY = "ARCMQNXADI90592Y";
+
+// --- GLOBAL CONFIGURATION (SUPABASE) ---
+const SUPABASE_URL = "https://your-project.supabase.co";
+const SUPABASE_KEY = "your-anon-key";
+let dbClient = null;
+
+try {
+    // The library defines 'supabase' globally
+    if (typeof supabase !== 'undefined' && SUPABASE_URL !== "https://your-project.supabase.co") {
+        dbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
+} catch (e) {
+    console.warn("Cloud DB not initialized. Using local mock history.");
+}
 
 // DOM Elements
 const channelInput = document.getElementById('channel-id');
@@ -25,22 +38,34 @@ let activeFields = [];
 async function logAccess(cid) {
     if (!cid) return;
     try {
-        // Fetch IP address
         const ipRes = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipRes.json();
+        const accessData = {
+            channelId: cid,
+            time: new Date().toLocaleString(),
+            ip: ipData.ip
+        };
 
-        // Send log to our server
-        await fetch('/log', {
+        // 1. Log to cloud database if available
+        if (dbClient) {
+            await dbClient.from('access_logs').insert([accessData]);
+        }
+
+        // 2. Also log to local server (if running)
+        fetch('/log', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                channelId: cid,
-                time: new Date().toLocaleString(),
-                ip: ipData.ip
-            })
-        });
+            body: JSON.stringify(accessData)
+        }).catch(() => { });
+
+        // 3. Save to local mock logs for Admin Panel preview
+        const mockLogs = JSON.parse(localStorage.getItem('admin_mock_logs') || '[]');
+        mockLogs.push(accessData);
+        if (mockLogs.length > 50) mockLogs.shift();
+        localStorage.setItem('admin_mock_logs', JSON.stringify(mockLogs));
+
     } catch (err) {
-        console.warn("Logging failed (Are you running server.js?):", err);
+        console.warn("Logging error:", err);
     }
 }
 
